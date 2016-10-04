@@ -32,6 +32,7 @@
 #include <oox/helper/propertyset.hxx>
 #include <oox/token/properties.hxx>
 #include "stylesbuffer.hxx"
+#include <iostream>
 
 namespace oox {
 namespace xls {
@@ -139,8 +140,15 @@ void UnitConverter::finalizeImport()
                 sal_Int32 nDigitWidth = 0;
                 for( sal_Unicode cChar = '0'; cChar <= '9'; ++cChar )
                     nDigitWidth = ::std::max( nDigitWidth, scaleToMm100( xFont->getCharWidth( cChar ), UNIT_TWIP ) );
+
+                std::cout << "Not fixing digit width to: " << nDigitWidth << " mm" << std::endl;
+
                 if( nDigitWidth > 0 )
                     maCoeffs[ UNIT_DIGIT ] = nDigitWidth;
+
+                std::cout << "Fixing digit width to: " << 211.67 << " mm" << std::endl;
+                maCoeffs[ UNIT_DIGIT ] = 211.67;
+
                 // get width of space character
                 sal_Int32 nSpaceWidth = scaleToMm100( xFont->getCharWidth( ' ' ), UNIT_TWIP );
                 if( nSpaceWidth > 0 )
