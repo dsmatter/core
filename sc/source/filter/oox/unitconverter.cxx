@@ -34,6 +34,7 @@
 #include <stylesbuffer.hxx>
 #include <biffhelper.hxx>
 #include <docuno.hxx>
+#include <iostream>
 
 namespace com::sun::star::awt { struct FontDescriptor; }
 
@@ -132,8 +133,18 @@ void UnitConverter::finalizeImport()
     for( sal_Unicode cChar = '0'; cChar <= '9'; ++cChar )
         nDigitWidth = ::std::max(nDigitWidth, o3tl::convert(xFont->getCharWidth(cChar),
                                                             o3tl::Length::twip, o3tl::Length::emu));
+
+    std::cout << "NOT setting digit width to calculated value of: " << nDigitWidth << " emu" << std::endl;
+
     if( nDigitWidth > 0 )
         maCoeffs[ Unit::Digit ] = nDigitWidth;
+
+
+    // Our fixed digit width found by experimentation is 211.67 mm/100.
+    // It needs to be converted to emu (English Metric Unit == 1/360000 cm).
+    maCoeffs[ Unit::Digit ] = 211.67 * 360;
+    std::cout << "Fixing digit width to: " << maCoeffs[ Unit::Digit ] << " emu" << std::endl;
+
     // get width of space character
     sal_Int64 nSpaceWidth
         = o3tl::convert(xFont->getCharWidth(' '), o3tl::Length::twip, o3tl::Length::emu);
